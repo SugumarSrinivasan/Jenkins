@@ -11,11 +11,17 @@ pipeline {
             }
         }
         stage('Scans') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    branch 'main'
+                }
+            }            
             parallel {
                 stage('TruffleHog Scan') {
                     steps {
                         echo 'Running BlackDuck Scan...'
-                        // Insert BlackDuck scan command here
+                        // Insert TruffleHog scan command here
                     }
                 }                
                 stage('Checkmarx Scan') {
