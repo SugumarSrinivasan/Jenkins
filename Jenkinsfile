@@ -10,13 +10,7 @@ pipeline {
                 echo 'Building the application...'
             }
         }
-        stage('Scans') {
-            when {
-                anyOf {
-                    branch 'develop'
-                    branch 'main'
-                }
-            }            
+        stage('Scans') {          
             parallel {
                 stage('TruffleHog Scan') {
                     steps {
@@ -81,37 +75,7 @@ pipeline {
                 }                
                 echo 'Deploying the application...'
             }
-        }
-        stage('QADeploy') {
-            steps {
-                script {
-                    def userInput = input(
-                        id: 'DeployApproval', message: 'Deploy to QA?', ok: 'Approve',
-                        parameters: [
-                            string(name: 'Deployer', defaultValue: '', description: 'Enter your name'),
-                            choice(name: 'Environment', choices: ['DEV', 'QA', 'STAGE', 'PROD'], description: 'Choose environment')
-                        ]
-                    )
-                    echo "Approved by: ${userInput['Deployer']} for environment: ${userInput['Environment']}"
-                }                
-                echo 'Deploying the application...'
-            }
-        }
-        stage('PRODDeploy') {
-            steps {
-                script {
-                    def userInput = input(
-                        id: 'DeployApproval', message: 'Deploy to Production?', ok: 'Approve',
-                        parameters: [
-                            string(name: 'Deployer', defaultValue: '', description: 'Enter your name'),
-                            choice(name: 'Environment', choices: ['DEV', 'QA', 'STAGE', 'PROD'], description: 'Choose environment')
-                        ]
-                    )
-                    echo "Approved by: ${userInput['Deployer']} for environment: ${userInput['Environment']}"
-                }                
-                echo 'Deploying the application...'
-            }
-        }                      
+        }                    
     }
     post {
         success {
